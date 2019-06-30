@@ -3,7 +3,6 @@ package control;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,7 +27,7 @@ public class Controlador
     public static String driver = "com.mysql.cj.jdbc.Driver";
 
     // Nombre de la base de datos
-    public static String database = "nombre_db";
+    public static String database = "name_db";
 
     // Host
     public static String hostname = "IP_db";
@@ -43,7 +42,7 @@ public class Controlador
     public static String username = "user_db";
 
     // Clave de usuario
-    public static String password = "user_pw_db";
+    public static String password = "pw_user_db";
     
     public static Connection conexDB;
 	
@@ -86,12 +85,13 @@ public class Controlador
 	
 	public static void inicializarVista()
 	{
-		ArrayList listado = modelo.darEquipos();
+		ArrayList<Equipo> listado = modelo.darEquipos();
 		vista = new VistaConsultor();
 		vista.darPanelLista().refrescarLista(listado);
 		vista.setVisible(true);
 		
 		vista.inicializarPanelAgregarEquipo();
+		vista.inicializarPanelEditarEquipo();
 	}
 	
 	public static void asignarEventos()
@@ -129,20 +129,45 @@ public class Controlador
 				String nombreEquipo = vista.darPanelAgregarEquipo().darTxtNombre().getText();
 				String cantidadEquipo = vista.darPanelAgregarEquipo().darTxtCantidad().getText();
 				
-				try
-				{						
-					Statement statem = conexDB.createStatement();
-					String sql = "INSERT INTO equipos (nombre, cantidad) VALUES('" + nombreEquipo + "', '" + cantidadEquipo + "');";
-					System.out.println(sql);
-					statem.execute(sql);
-					
-					modelo.agregarEquipo(nombreEquipo, Integer.parseInt(cantidadEquipo));
-					vista.darPanelAgregarEquipo().dispose();
-					vista.darPanelLista().refrescarLista(modelo.darEquipos());
-				}
-				catch(SQLException ex)
+				if(nombreEquipo.equals(""))
 				{
-					ex.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Nombre de equipo no puede ser nulo", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				else if(cantidadEquipo.equals(""))
+				{
+					JOptionPane.showMessageDialog(null, "Cantidad del equipo no puede ser nula", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				else if(isNumeric(cantidadEquipo) == false)
+				{
+					JOptionPane.showMessageDialog(null, "La cantidad no es dato numérico", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				else
+				{
+					if(modelo.buscarEquipoPorNombre(nombreEquipo) == null)
+					{
+						try
+						{						
+							Statement statem = conexDB.createStatement();
+							String sql = "INSERT INTO equipos (nombre, cantidad) VALUES('" + nombreEquipo + "', '" + cantidadEquipo + "');";
+							System.out.println(sql);
+							statem.execute(sql);
+							
+							modelo.agregarEquipo(nombreEquipo, Integer.parseInt(cantidadEquipo));
+							vista.darPanelAgregarEquipo().dispose();
+							vista.darPanelLista().refrescarLista(modelo.darEquipos());
+							
+							vista.darPanelAgregarEquipo().darTxtNombre().setText("");
+							vista.darPanelAgregarEquipo().darTxtCantidad().setText("");
+						}
+						catch(SQLException ex)
+						{
+							ex.printStackTrace();
+						}	
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null, "Este equipo ya existe en el inventario. No se puede agregar", "Error", JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			}
 		});
@@ -167,18 +192,80 @@ public class Controlador
 			public void actionPerformed(ActionEvent e)
 			{
 				String nom = JOptionPane.showInputDialog(null, "Ingresa el nombre del equipo a buscar:", "Buscar equipo", JOptionPane.INFORMATION_MESSAGE);
-				Equipo buscado = modelo.buscarEquipoPorNombre(nom);
 				
-				if(buscado != null)
+				if(nom != null)
 				{
-					JOptionPane.showMessageDialog(null, nom + " en inventario: " + buscado.darCantidad(), "Buscar equipo", JOptionPane.INFORMATION_MESSAGE);
-				}
-				else
-				{
-					JOptionPane.showMessageDialog(null, "El equipo buscado no existe en la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
+					Equipo buscado = modelo.buscarEquipoPorNombre(nom);
+					if(buscado != null)
+					{
+						JOptionPane.showMessageDialog(null, buscado.darNombre() + " en inventario: " + buscado.darCantidad(), "Buscar equipo", JOptionPane.INFORMATION_MESSAGE);
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null, "El equipo buscado no existe en la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			}
 		});
+		
+		vista.darPanelBotones().darBtnEditar().addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				Equipo seleccionado = (Equipo) vista.darPanelLista().darLista().getSelectedValue();
+				vista.darPanelEditarEquipo().darTxtNombre().setText(seleccionado.darNombre());
+				vista.darPanelEditarEquipo().darTxtCantidad().setText(seleccionado.darCantidad()+"");				
+				vista.darPanelEditarEquipo().setVisible(true);
+			}
+		});
+		
+///////////////////////		BOTONES EN LA VENTANA EDITAR EQUIPO      /////////////////////////////////
+		
+		vista.darPanelEditarEquipo().darBtnAceptar().addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				String nombreEquipo = vista.darPanelEditarEquipo().darTxtNombre().getText();
+				String cantidadEquipo = vista.darPanelEditarEquipo().darTxtCantidad().getText();
+				Equipo seleccionado = (Equipo) vista.darPanelLista().darLista().getSelectedValue();
+				
+				try
+				{
+					Statement statem = conexDB.createStatement();
+					String sql = "UPDATE equipos SET nombre = '"+nombreEquipo+"', cantidad = '"+cantidadEquipo+"' WHERE	nombre='"+seleccionado.darNombre()+"';";
+					System.out.println(sql);
+					statem.execute(sql);
+					
+					modelo.buscarEquipoPorNombreYCantidad(seleccionado.darNombre(), seleccionado.darCantidad()).asignarNombre(nombreEquipo);
+					modelo.buscarEquipoPorNombreYCantidad(seleccionado.darNombre(), seleccionado.darCantidad()).asignarCantidad(Integer.parseInt(cantidadEquipo));
+					
+					vista.darPanelEditarEquipo().dispose();
+					vista.darPanelLista().refrescarLista(modelo.darEquipos());
+					
+					vista.darPanelEditarEquipo().darTxtNombre().setText("");
+					vista.darPanelEditarEquipo().darTxtCantidad().setText("");
+				}
+				catch(SQLException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		});
+		
+		vista.darPanelEditarEquipo().darBtnCancelar().addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				vista.darPanelEditarEquipo().darTxtNombre().setText("");
+				vista.darPanelEditarEquipo().darTxtCantidad().setText("");
+				
+				vista.darPanelEditarEquipo().dispose();
+			}
+		});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vista.darPanelBotones().darBtnEliminar().addActionListener(new ActionListener()
 		{	
@@ -259,5 +346,17 @@ public class Controlador
 			e.printStackTrace();
 		}
 	}
-
+	
+	public static boolean isNumeric(String num)
+	{
+		try
+		{
+			Integer.parseInt(num);
+			return true;
+		}
+		catch(NumberFormatException e)
+		{
+			return false;
+		}
+	}
 }
