@@ -88,6 +88,9 @@ public class Controlador
 		ArrayList<Equipo> listado = modelo.darEquipos();
 		vista = new VistaConsultor();
 		vista.darPanelLista().refrescarLista(listado);
+		Equipo equipo = ( Equipo )vista.darPanelLista().darLista().getSelectedValue( );
+		vista.darPanelDatos().darTxtNombre().setText(equipo.darNombre());
+		vista.darPanelDatos().darTxtCantidad().setText(""+equipo.darCantidad());		
 		vista.setVisible(true);
 		
 		vista.inicializarPanelAgregarEquipo();
@@ -100,12 +103,12 @@ public class Controlador
 			@Override
 			public void valueChanged(ListSelectionEvent e)
 			{
-				if( vista.darPanelLista().darLista().getSelectedValue( ) != null )
+				Equipo equipo = ( Equipo )vista.darPanelLista().darLista().getSelectedValue( );
+				
+				if(equipo != null )
 		        {
-		            Equipo equipo = ( Equipo )vista.darPanelLista().darLista().getSelectedValue( );
-		            
-		            vista.darPanelDatos().darTxtNombre().setText(equipo.darNombre());
-		            vista.darPanelDatos().darTxtCantidad().setText(""+equipo.darCantidad());
+					vista.darPanelDatos().darTxtNombre().setText(equipo.darNombre());
+					vista.darPanelDatos().darTxtCantidad().setText(""+equipo.darCantidad());
 		        }
 			}
 		});
