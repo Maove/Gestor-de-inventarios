@@ -23,14 +23,14 @@ public class Controlador
 	
 	private static VistaConsultor vista;
 	
-	// Librer韆 de MySQL
+	// Librer铆a de MySQL
     public static String driver = "com.mysql.cj.jdbc.Driver";
 
     // Nombre de la base de datos
-    public static String database = "eventbox";
+    public static String database = "name_db";
 
     // Host
-    public static String hostname = "192.168.70.138";
+    public static String hostname = "ip_db_server";
 
     // Puerto
     public static String port = "3306";
@@ -39,10 +39,10 @@ public class Controlador
     public static String url = "jdbc:mysql://" + hostname + ":" + port + "/" + database + "?useSSL=false";
 
     // Nombre de usuario
-    public static String username = "root";
+    public static String username = "name_user_db";
 
     // Clave de usuario
-    public static String password = "Maovedatabase11!";
+    public static String password = "pw_user_db";
     
     public static Connection conexDB;
 	
@@ -65,8 +65,8 @@ public class Controlador
 			}
 			else
 			{
-				JOptionPane.showMessageDialog(null, "No existe conexi髇 con la base de datos", "Error - MySQL", JOptionPane.ERROR_MESSAGE);;
-				System.out.println("No existe conexi髇 a la base de datos");
+				JOptionPane.showMessageDialog(null, "No existe conexi贸n con la base de datos", "Error - MySQL", JOptionPane.ERROR_MESSAGE);;
+				System.out.println("No existe conexi贸n a la base de datos");
 				System.exit(0);
 			}
 		}
@@ -142,7 +142,7 @@ public class Controlador
 				}
 				else if(isNumeric(cantidadEquipo) == false)
 				{
-					JOptionPane.showMessageDialog(null, "La cantidad no es dato num閞ico", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "La cantidad no es dato num茅rico", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				else
 				{
@@ -275,7 +275,7 @@ public class Controlador
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				int respuesta = JOptionPane.showConfirmDialog(null, "Est醩 seguro de querer eliminar el equipo seleccionado?", "Confirmaci髇", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+				int respuesta = JOptionPane.showConfirmDialog(null, "Est谩s seguro de querer eliminar el equipo seleccionado?", "Confirmaci贸n", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
 				if(respuesta == JOptionPane.YES_OPTION)
 				{
 					try
@@ -307,7 +307,7 @@ public class Controlador
 
 		Class.forName(driver);
 		conn = DriverManager.getConnection(url, username, password);
-		System.out.println("La conexi髇 con la base de datos ha sido creada");            
+		System.out.println("La conexi贸n con la base de datos ha sido creada");            
 
         return conn;
 	}
@@ -342,7 +342,7 @@ public class Controlador
 		{
 			con.close();
 			
-			System.out.println("La conexi髇 con la base de datos ha sido cerrada!");
+			System.out.println("La conexi贸n con la base de datos ha sido cerrada!");
 		}
 		catch(SQLException e)
 		{
