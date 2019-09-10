@@ -6,3 +6,5 @@ Proyecto didáctico de desarrollo en Java. Sistema de gestión de inventarios us
 3. Se agrega el controlador en Java.
 
 Se valida la conexión desde la aplicación hacia la base de datos, usando el servicio en una máquina virtual desplegada en el mismo equipo (localhost)
+
+Se agrega el archivo de comandos usados en CentOS 7 para crear la base de datos y las tablas requeridas.
