@@ -1,0 +1,17 @@
+sudo yum install mariadb mariadb-server -y
+
+mysql_secure_installation
+
+mysql -u name_user_db -p
+
+CREATE DATABASE name_db;
+
+USE name_db;
+
+CREATE TABLE IF NOT EXISTS equipos (id int(5) NOT NULL AUTO_INCREMENT, type varchar(50) DEFAULT NULL, PRIMARY KEY(equip_id));
+
+GRANT ALL PRIVILEGES ON name_db TO 'name_user_db'@'localhost' IDENTIFIED BY 'pw_user_db';
+
+FLUSH PRIVILEGES;
+
+exit;
