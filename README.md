@@ -8,3 +8,5 @@ Proyecto didáctico de desarrollo en Java. Sistema de gestión de inventarios us
 Se valida la conexión desde la aplicación hacia la base de datos, usando el servicio en una máquina virtual desplegada en el mismo equipo (localhost)
 
 Se agrega el archivo de comandos usados en CentOS 7 para crear la base de datos y las tablas requeridas.
+
+Se debe tener en cuenta que se agrega la librería externa jdbc, con la cual se logra gestionar la conexión entre la base de datos y la aplicación Java
