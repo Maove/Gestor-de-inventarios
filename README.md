@@ -10,3 +10,13 @@ Se valida la conexión desde la aplicación hacia la base de datos, usando el se
 Se agrega el archivo de comandos usados en CentOS 7 para crear la base de datos y las tablas requeridas.
 
 Se debe tener en cuenta que se agrega la librería externa jdbc, con la cual se logra gestionar la conexión entre la base de datos y la aplicación Java
+
+Estructura de la base de datos
+
+---------------------------------------------------------
+|    dato                  |           tipo             |
+|--------------------------|----------------------------|
+|    nombre                |          varchar           |
+|--------------------------|----------------------------|
+|    cantidad              |          int               |
+|--------------------------|----------------------------|
