@@ -1,5 +1,6 @@
 # Gestor-de-inventarios
 (Actualizado 21-04-2022)
+
 Proyecto didáctico de desarrollo en Java. Sistema de gestión de inventarios usando base de datos MySql.
 
 1. Se agregan las clases del modelo en Java.
